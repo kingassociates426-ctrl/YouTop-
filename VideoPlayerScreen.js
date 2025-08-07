@@ -116,3 +116,75 @@ const styles = StyleSheet.create({
   inputRow: { flexDirection: 'row', alignItems: 'center' },
   input: { flex: 1, borderWidth: 1, borderColor: '#ccc', borderRadius: 5, padding: 8, marginRight: 8 },
 });
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Button, TextInput, FlatList } from 'react-native';
+// Video player import (for React Native video)
+// import Video from 'react-native-video'; // Uncomment if you use this library
+
+export default function VideoPlayerScreen({ route }) {
+  const videoTitle = route.params?.videoTitle || 'No Video Selected';
+  const [chatMessages, setChatMessages] = useState([]);
+  const [input, setInput] = useState('');
+
+  // Dummy video URL (You can change this to any MP4 link)
+  const videoUrl = 'https://www.w3schools.com/html/mov_bbb.mp4';
+
+  const sendMessage = () => {
+    if (input.trim()) {
+      setChatMessages([...chatMessages, { id: Date.now().toString(), text: input }]);
+      setInput('');
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      {/* Video Player Area */}
+      <View style={styles.videoBox}>
+        {/* Uncomment below if you use react-native-video */}
+        {/* 
+        <Video 
+          source={{ uri: videoUrl }} 
+          style={{ width: '100%', height: 180 }} 
+          controls={true}
+        />
+        */}
+        <Text style={styles.videoText}>[Video Player: {videoTitle}]</Text>
+        <Text style={styles.videoText}>URL: {videoUrl}</Text>
+      </View>
+      <Text style={styles.title}>{videoTitle}</Text>
+      <Text style={styles.participants}>ROI joined</Text>
+      
+      {/* Chat Box */}
+      <View style={styles.chatBox}>
+        <FlatList
+          data={chatMessages}
+          keyExtractor={item => item.id}
+          renderItem={({ item }) => (
+            <Text style={styles.chatMsg}>{item.text}</Text>
+          )}
+        />
+      </View>
+      <View style={styles.inputRow}>
+        <TextInput
+          value={input}
+          onChangeText={setInput}
+          style={styles.input}
+          placeholder="Type a message..."
+        />
+        <Button title="Send" onPress={sendMessage} />
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
+  videoBox: { height: 180, backgroundColor: '#ccc', justifyContent: 'center', alignItems: 'center', borderRadius: 8, marginBottom: 12 },
+  videoText: { fontSize: 16, color: '#444' },
+  title: { fontSize: 20, fontWeight: 'bold', marginBottom: 6 },
+  participants: { color: '#888', marginBottom: 12 },
+  chatBox: { minHeight: 80, maxHeight: 120, backgroundColor: '#eee', borderRadius: 6, marginBottom: 12, padding: 8 },
+  chatMsg: { color: '#222', marginBottom: 4 },
+  inputRow: { flexDirection: 'row', alignItems: 'center' },
+  input: { flex: 1, borderWidth: 1, borderColor: '#ccc', borderRadius: 5, padding: 8, marginRight: 8 },
+});
