@@ -1,54 +1,56 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import React, { useState } from 'react';
+import { SafeAreaView, View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Button } from 'react-native';
+
+const videos = [
+  { id: '1', title: 'Pyar Vyar (Official Video)' },
+  { id: '2', title: 'Majid Al Mohandis - Kheth Aoyooni' },
+  { id: '3', title: 'Majid Al Mohandis Ensaa' },
+  { id: '4', title: 'Ramy Sabry - Mosh Farek' },
+];
 
 export default function App() {
+  const [search, setSearch] = useState('');
+  const [inviteMsg, setInviteMsg] = useState('');
+  const filterVideos = videos.filter(v => v.title.toLowerCase().includes(search.toLowerCase()));
+
+  const handleInvite = (videoTitle) => {
+    setInviteMsg(`Invited friends to "${videoTitle}"!`);
+    setTimeout(() => setInviteMsg(''), 2000);
+  };
+
   return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Welcome to YouTop - Real-time Video Watch Party App!</Text>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <TextInput
+        style={styles.search}
+        value={search}
+        onChangeText={setSearch}
+        placeholder="Search videos..."
+      />
+      <FlatList
+        data={filterVideos}
+        keyExtractor={item => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <TouchableOpacity>
+              <Text>{item.title}</Text>
+            </TouchableOpacity>
+            <Button title="Invite" onPress={() => handleInvite(item.title)} />
+          </View>
+        )}
+      />
+      {inviteMsg !== '' && (
+        <View style={styles.inviteBanner}>
+          <Text style={styles.inviteText}>{inviteMsg}</Text>
+        </View>
+      )}
+    </SafeAreaView>
   );
 }
-import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 
-import LoginScreen from './LoginScreen';
-import ProfileScreen from './ProfileScreen';
-import VideoListScreen from './VideoListScreen';
-import VideoPlayerScreen from './VideoPlayerScreen';
-
-const Stack = createStackNavigator();
-
-export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
-        <Stack.Screen name="Videos" component={VideoListScreen} />
-        <Stack.Screen name="Player" component={VideoPlayerScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-}
-import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
-import LoginScreen from './LoginScreen';
-import ProfileScreen from './ProfileScreen';
-import VideoListScreen from './VideoListScreen';
-
-const Tab = createBottomTabNavigator();
-
-export default function App() {
-  return (
-    <NavigationContainer>
-      <Tab.Navigator initialRouteName="Login">
-        <Tab.Screen name="Login" component={LoginScreen} />
-        <Tab.Screen name="Videos" component={VideoListScreen} />
-        <Tab.Screen name="Profile" component={ProfileScreen} />
-      </Tab.Navigator>
-    </NavigationContainer>
-  );
-}
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
+  card: { padding: 14, marginBottom: 8, backgroundColor: '#f1f1f1', borderRadius: 6, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  search: { borderWidth: 1, borderColor: '#ccc', borderRadius: 6, padding: 8, marginBottom: 14 },
+  inviteBanner: { backgroundColor: '#d1e7dd', padding: 8, borderRadius: 6, marginTop: 8 },
+  inviteText: { color: '#0f5132', fontWeight: 'bold', textAlign: 'center' },
+});
