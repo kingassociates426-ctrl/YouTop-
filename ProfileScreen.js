@@ -43,3 +43,44 @@ const styles = StyleSheet.create({
   connected: { width: '100%', marginBottom: 16 },
   settings: { width: '100%' },
 });
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TextInput, Button } from 'react-native';
+
+export default function ProfileScreen() {
+  const [name, setName] = useState("ROI");
+  const [editing, setEditing] = useState(false);
+  const [input, setInput] = useState(name);
+
+  const saveName = () => {
+    setName(input);
+    setEditing(false);
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.header}>Profile</Text>
+      {editing ? (
+        <>
+          <TextInput 
+            value={input}
+            onChangeText={setInput}
+            style={styles.input}
+          />
+          <Button title="Save" onPress={saveName} />
+        </>
+      ) : (
+        <>
+          <Text style={styles.text}>Name: {name}</Text>
+          <Button title="Edit" onPress={() => setEditing(true)} />
+        </>
+      )}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 20, backgroundColor: '#fff' },
+  header: { fontSize: 24, fontWeight: 'bold', marginBottom: 16 },
+  text: { fontSize: 18, marginBottom: 8 },
+  input: { borderWidth: 1, borderColor: '#ccc', padding: 8, borderRadius: 6, marginBottom: 8 }
+});
