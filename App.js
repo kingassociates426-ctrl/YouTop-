@@ -8,3 +8,26 @@ export default function App() {
     </View>
   );
 }
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+import LoginScreen from './LoginScreen';
+import ProfileScreen from './ProfileScreen';
+import VideoListScreen from './VideoListScreen';
+import VideoPlayerScreen from './VideoPlayerScreen';
+
+const Stack = createStackNavigator();
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Login">
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="Videos" component={VideoListScreen} />
+        <Stack.Screen name="Player" component={VideoPlayerScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
