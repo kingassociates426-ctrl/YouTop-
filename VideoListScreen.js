@@ -156,3 +156,82 @@ const styles = StyleSheet.create({
   card: { padding: 14, marginBottom: 8, backgroundColor: '#f1f1f1', borderRadius: 6 },
   search: { borderWidth: 1, borderColor: '#ccc', borderRadius: 6, padding: 8, marginBottom: 14 },
 });
+import React, { useState } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput, Button } from 'react-native';
+
+const invitedVideos = [
+  { id: '1', title: 'Pyar Vyar (Official Video)' },
+];
+
+const publicVideos = [
+  { id: '2', title: 'Majid Al Mohandis - Kheth Aoyooni | Lyrics Video 2024' },
+  { id: '3', title: 'Majid Al Mohandis Ensaa' },
+  { id: '4', title: 'Ramy Sabry - Mosh Farek' },
+];
+
+export default function VideoListScreen({ navigation }) {
+  const [search, setSearch] = useState('');
+  const [inviteMsg, setInviteMsg] = useState('');
+  const filterVideos = videos =>
+    videos.filter(v => v.title.toLowerCase().includes(search.toLowerCase()));
+
+  const handleInvite = (videoTitle) => {
+    setInviteMsg(`Invited friends to "${videoTitle}"!`);
+    setTimeout(() => setInviteMsg(''), 2000); // Hide after 2 seconds
+  };
+
+  return (
+    <View style={styles.container}>
+      <TextInput
+        style={styles.search}
+        value={search}
+        onChangeText={setSearch}
+        placeholder="Search videos..."
+      />
+      <Text style={styles.header}>Invited</Text>
+      <FlatList
+        data={filterVideos(invitedVideos)}
+        keyExtractor={item => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Player', { videoTitle: item.title })}
+            >
+              <Text>{item.title}</Text>
+            </TouchableOpacity>
+            <Button title="Invite" onPress={() => handleInvite(item.title)} />
+          </View>
+        )}
+      />
+      <Text style={styles.header}>Public</Text>
+      <FlatList
+        data={filterVideos(publicVideos)}
+        keyExtractor={item => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Player', { videoTitle: item.title })}
+            >
+              <Text>{item.title}</Text>
+            </TouchableOpacity>
+            <Button title="Invite" onPress={() => handleInvite(item.title)} />
+          </View>
+        )}
+      />
+      {inviteMsg !== '' && (
+        <View style={styles.inviteBanner}>
+          <Text style={styles.inviteText}>{inviteMsg}</Text>
+        </View>
+      )}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
+  header: { fontSize: 22, fontWeight: 'bold', marginTop: 18, marginBottom: 8 },
+  card: { padding: 14, marginBottom: 8, backgroundColor: '#f1f1f1', borderRadius: 6, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  search: { borderWidth: 1, borderColor: '#ccc', borderRadius: 6, padding: 8, marginBottom: 14 },
+  inviteBanner: { backgroundColor: '#d1e7dd', padding: 8, borderRadius: 6, marginTop: 8 },
+  inviteText: { color: '#0f5132', fontWeight: 'bold', textAlign: 'center' },
+});
