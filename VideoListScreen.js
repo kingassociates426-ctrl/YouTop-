@@ -94,3 +94,65 @@ const styles = StyleSheet.create({
   header: { fontSize: 22, fontWeight: 'bold', marginTop: 18, marginBottom: 8 },
   card: { padding: 14, marginBottom: 8, backgroundColor: '#f1f1f1', borderRadius: 6 },
 });
+import React, { useState } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+
+const invitedVideos = [
+  { id: '1', title: 'Pyar Vyar (Official Video)' },
+];
+
+const publicVideos = [
+  { id: '2', title: 'Majid Al Mohandis - Kheth Aoyooni | Lyrics Video 2024' },
+  { id: '3', title: 'Majid Al Mohandis Ensaa' },
+  { id: '4', title: 'Ramy Sabry - Mosh Farek' },
+];
+
+export default function VideoListScreen({ navigation }) {
+  const [search, setSearch] = useState('');
+  const filterVideos = videos =>
+    videos.filter(v => v.title.toLowerCase().includes(search.toLowerCase()));
+
+  return (
+    <View style={styles.container}>
+      <TextInput
+        style={styles.search}
+        value={search}
+        onChangeText={setSearch}
+        placeholder="Search videos..."
+      />
+      <Text style={styles.header}>Invited</Text>
+      <FlatList
+        data={filterVideos(invitedVideos)}
+        keyExtractor={item => item.id}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => navigation.navigate('Player', { videoTitle: item.title })}
+          >
+            <Text>{item.title}</Text>
+          </TouchableOpacity>
+        )}
+      />
+      <Text style={styles.header}>Public</Text>
+      <FlatList
+        data={filterVideos(publicVideos)}
+        keyExtractor={item => item.id}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => navigation.navigate('Player', { videoTitle: item.title })}
+          >
+            <Text>{item.title}</Text>
+          </TouchableOpacity>
+        )}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
+  header: { fontSize: 22, fontWeight: 'bold', marginTop: 18, marginBottom: 8 },
+  card: { padding: 14, marginBottom: 8, backgroundColor: '#f1f1f1', borderRadius: 6 },
+  search: { borderWidth: 1, borderColor: '#ccc', borderRadius: 6, padding: 8, marginBottom: 14 },
+});
